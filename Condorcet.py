@@ -116,3 +116,65 @@ def main_uninominal():
     plt.bar(partis, pop_parti)
     plt.show()
     return vainqueur
+
+"""
+Alternatif
+"""
+def cree_bulletins_alternatif(individu):
+    liste_choix = partis_pos.copy()
+    n = len(liste_choix)
+    bulletin = [0 for k in liste_choix]
+    for k in range(n):
+        liste_choix[k] = abs(liste_choix[k] - individu)
+    for i in range(n):
+        maxi = liste_choix[0]
+        val_maxi = 0
+        for k in range(1,n):
+            if liste_choix[k] > maxi:
+                maxi = liste_choix[k]
+                val_maxi = k
+        liste_choix[val_maxi] = -1
+        bulletin[val_maxi] = n-i
+    return bulletin
+        
+def vote_alternatif(bulletins):
+    n = len(partis)
+    resultats = []
+    score = [0 for k in partis]
+    sortis = []
+    maxi = max(score)
+    tot = len(bulletins)
+    while n > 0 and (maxi/tot) < 0.5:
+        #FINIR A PARTIR D'ICI
+        for vote in bulletins:
+            k = vote.index(1)
+            i = 1
+            while i < n-1 and not k in sortis:
+                k = vote.index(1+i)
+                i += 1
+            score[k] += 1
+        mini = min(score)
+        sortis.append(score.index(mini))
+        n -= 1
+        resultats.append(score)
+    return score, resultats, sortis, n
+        
+
+
+def main_alternatif():
+    bulletins = [cree_bulletins_alternatif(individu) for individu in pop]
+    """
+    vainqueur, resultats = vote_alternatif(bulletins)
+    
+    plt.clf()
+    plt.bar(partis, score)
+    plt.show()
+    plt.clf()
+    pop_parti = [0 for k in range(len(partis))]
+    for ind in pop:
+        pop_parti[trouve_parti(ind, partis_pos)] += 1
+    plt.bar(partis, pop_parti)
+    plt.show()
+    return vainqueur, resultats
+    """
+    return vote_alternatif(bulletins)
