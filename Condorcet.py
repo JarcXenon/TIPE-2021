@@ -166,7 +166,6 @@ def cree_bulletins_alternatif(individu):
 def min_alternatif(résultats, sortis):
     i = 0
     n = len(résultats)
-    #print(résultats, sortis)
     while i < n and i in sortis:
         i += 1
     imax = résultats[i]
