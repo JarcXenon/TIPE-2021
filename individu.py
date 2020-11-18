@@ -12,14 +12,20 @@ class Individu():
         self.a = a
         self.b = b
         self.epsilon = epsilon
+       
+    def __repr__(self):
+        return f'Individu({self.a}, {self.b})'
     
     def __le__(self, other):
+        # <=
         return self.distance_carre() < other.distance_carre() or self.__eq__(other)
     
     def __lt__(self,other):
+        # <
         return self.distance_carre() < other.distance_carre()
     
     def __eq__(self, other):
+        # ==
         return abs(self.distance_carre() - other.distance_carre()) <= self.epsilon
     
     def distance_carre(self):
