@@ -58,7 +58,7 @@ def cree_bulletins(individu, scrutin):
         vainc = trouve_parti(individu, lvalduel)
         #On cherche le parti le plus proche de l'individu (renvoit 0 si c'est celui de gauche et 1 si c'est celui de droite
         bulletin.append(vainc == 0)
-        #On compare le vainqueur 
+        #On ajoute le résultat du duel au bulletin
     return bulletin
 
 
@@ -66,6 +66,7 @@ def duel_condorcet(bulletins, scrutin):
     #Dépouille les bulletins
     score = [0 for k in partis]
     for bulletin in bulletins:
+        #Pour chaque bulletin,
         for nduel in range(len(bulletin)):
             duel = bulletin[nduel]
             duel1, duel2 = scrutin[nduel]
