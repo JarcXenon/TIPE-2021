@@ -164,6 +164,7 @@ def cree_bulletins_alternatif(individu):
         
 
 def min_alternatif(résultats, sortis):
+    #Renvoie l'indice du plus petit élément de résultat qui n'est pas dans sortis
     i = 0
     n = len(résultats)
     while i < n and i in sortis:
