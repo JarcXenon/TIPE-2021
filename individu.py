@@ -5,9 +5,13 @@ Created on Wed Nov 18 14:12:48 2020
 
 @author: m4this
 """
+from random import choice
 
 class Individu():
-    
+    """
+    a, b : position de l'individu sur l'échéquier politique
+    p : distance à laquelle un parti doit être pour que l'individu l'approuve
+    """
     def __init__(self, a, b, p,  epsilon = 10 ** -9):
         self.a = a
         self.b = b
@@ -15,7 +19,7 @@ class Individu():
         self.epsilon = epsilon
        
     def __repr__(self):
-        return f'Individu({self.a}, {self.b})'
+        return f'Individu({self.a}, {self.b}, {self.p})'
     
     def __le__(self, other):
         # <=
@@ -34,7 +38,7 @@ class Individu():
 
 
 
-def mini(ind, liste):
+def minis(ind, liste):
     
     m = liste[0]
     l_mini = []
@@ -47,6 +51,11 @@ def mini(ind, liste):
             l_mini.append(element)
     
     return l_mini
+
+def mini(ind, liste):
+    l = minis(ind, liste)
+    return choice(l)
+    
 
 def disque(ind, liste):
     p_c = ind.p ** 2
