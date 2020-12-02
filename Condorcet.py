@@ -211,5 +211,5 @@ def main_alternatif():
     for j in range(n):
         k = résultats[n-j-1]
         plt.bar(partis + ["ordre"], k + [(y*(n-j))/n])
-        plt.show()
+    plt.show()
     return vainqueur

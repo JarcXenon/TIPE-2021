@@ -59,4 +59,4 @@ def mini(ind, liste):
 
 def disque(ind, liste):
     p_c = ind.p ** 2
-    return [element for element in liste if element.distance_carre() <= p_c]
+    return [element for element in liste if ind.distance_caree_autre(element) <= p_c]
