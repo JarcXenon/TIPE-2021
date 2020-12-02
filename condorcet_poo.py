@@ -36,16 +36,16 @@ class Data():
                     li =0
                     lj =0
                     if vote[i]<vote[j]:
-                        lj += 1
-                    else:
                         li += 1
+                    else:
+                        lj += 1
                 if li < lj:
                     score[j] += 1
                 else:
                     score[i] += 1           
         if afficher:
             plt.clf()
-            plt.plot(self.partis, score, color = 'b')
+            plt.bar(self.partis, score, color = 'b')
         
         score_vainqueur = max(score)
         vainc = []
