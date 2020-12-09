@@ -14,7 +14,7 @@ class Data():
         
         with open(file, "r") as f:
             
-            self.partis = f.readline().strip('\n').split(',')[1:]
+            self.choix = f.readline().strip('\n').split(',')
             lines = f.readlines()
             
             self.votes = []
@@ -24,17 +24,17 @@ class Data():
                 self.votes.append([int(n) for n in vote])
         
     def __repr__(self):
-        return f'Data({self.file}, {self.partis})'
+        return f'Data({self.file}, {self.choix})'
     
     def condorcet(self, afficher = False):
-        score = [0 for _ in self.partis]
+        score = [0 for _ in self.choix]
         
-        n = len(self.partis)
+        n = len(self.choix)
         for i in range(n):
-            for j in range((i+1), n):
+            for j in range(i+1, n):
+                li =0
+                lj =0
                 for vote in self.votes:
-                    li =0
-                    lj =0
                     if vote[i]<vote[j]:
                         li += 1
                     else:
@@ -45,11 +45,17 @@ class Data():
                     score[i] += 1           
         if afficher:
             plt.clf()
-            plt.bar(self.partis, score, color = 'b')
+            plt.bar(self.choix, score, color = 'b')
         
-        score_vainqueur = max(score)
-        vainc = []
+        score_vainc = max(score)
+        print("Vainqueur(s) :")
         for i in range (n):
-            if score[i] == score_vainqueur:
-                vainc.append(self.partis[i])
-        return vainc
+            if score[i] == score_vainc:
+                print(self.choix[i])
+        if score_vainc == n:
+            print("C'est un vainqueur de Condorcet")
+        else :
+            print("Il n'y a pas de vainqueur de Condorcet")
+
+a = Data("vote classement.csv")
+a.condorcet(afficher = True)
