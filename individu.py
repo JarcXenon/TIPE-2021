@@ -68,12 +68,12 @@ def minis(ind, liste_partis):
     ind : Individu
         désigne un individu
     liste_partis : Individu list
-        liste des partis.
+        tableau des partis.
 
     Returns
     -------
     l_mini : Invidu list
-        liste des partis les plus proches de l'individu ind
+        tableau des partis les plus proches de l'individu ind
 
     """
     
@@ -97,7 +97,7 @@ def mini(ind, liste_partis):
     ind : Individu
         désigne un individu
     liste_partis : Individu list
-        liste des partis.
+        tableau des partis.
 
     Returns
     -------
@@ -117,11 +117,11 @@ def disque(ind, liste_partis):
     ind : Individu
         désigne un individu
     liste_partis : Individu list
-        liste des partis.
+        tableau des partis.
 
     Returns
     -------
-    liste de tous les partis que l'individu approuve
+    tableau de tous les partis que l'individu approuve
 
     """
     p_c = ind.p ** 2

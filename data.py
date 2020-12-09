@@ -11,26 +11,35 @@ import matplotlib.pyplot as plt
 
 
 
-def median(liste):
-    return sorted(liste)[len(liste) // 2]
-
-
-def quantile(liste, p = 0.5):
-    return sorted(liste)[int(len(liste) * p)]
 
 class Data(): 
     
-    def __init__(self, file):
+    def __init__(self, file, appreciations = ["Pas vu", "Nul", "Mauvais", "Moyen", "Assez bien", "Bien", "Excellent"]):
+        """
+        
+
+        Parameters
+        ----------
+        file : string
+            nom du fichier dans lequel se trouve les données à récupérer
+        appreciations : string list
+            tableau des appréciations possibles
+
+        Returns
+        -------
+        None.
+
+        """
         self.file = file
-        self.appreciations = ["Pas vu", "Nul", "Mauvais", "Moyen", "Assez bien", "Bien", "Excellent"]
+        self.appreciations = appreciations
         
         with open(file, "r") as f:
             
-            self.choix = f.readline().strip('\n').split(',')[1:]
+            self.choix = f.readline().strip('\n').split(',')[1:] #Tableau des choix possibles
             lines = f.readlines()
             
-            self.noms = []
-            self.votes = []
+            self.noms = [] #Tableau des noms des participants
+            self.votes = [] #Tableau des tableaux représentant les votes de chaque personne
             
             for line in lines:
                 nom, *vote = line.split(',')
@@ -41,33 +50,71 @@ class Data():
         return f'Data({self.file}, {self.choix})'
     
     def jugement_majoritaire(self, compte_pas_vu = True, afficher = False, départage = 0.75):
+        """
         
-        l = [[] for _ in self.choix]
+
+        Parameters
+        ----------
+        compte_pas_vu : bool, optional
+            indique si les votes indiquant la non connaissance d'un choix est comptée. 
+            Vaut par défaut True.
+        afficher : bool, optional
+            si vrai, affiche le graphe du vote au jugement majoritaire. 
+            Vaut par défaut False.
+        départage : float, optional
+            Valeur entre 0 et 1 indique le taux pour départager les choix en cas d'égalité. 
+            Vaut par défaut 0.75.
+
+        Returns
+        -------
+        vainqueur : string
+            choix vainqueur par jugement majoritaire.
+
+        """
+        liste_des_votes = [[] for _ in self.choix]
         
         for vote in self.votes:
             for i, element in enumerate(vote):
                 if compte_pas_vu or element != 1:
-                    l[i].append(element)
+                    liste_des_votes[i].append(element)
         
         
         if afficher:
             start = 1 if compte_pas_vu else 2 
-            fig, ax = self.graphe_majo(l, start)
-            nb_votant = len(l[0])
+            fig, ax = self.graphe_majo(liste_des_votes, start)
+            nb_votant = len(liste_des_votes[0])
             ax.vlines(nb_votant/2, -0.2, 9.2, color = "blue" )
             
             plt.show()
             
-        medians = [median(liste) for liste in l]
+        medians = [quantile(liste) for liste in liste_des_votes]
         max_median = max(medians)
         n = medians.count(max_median)
         if n == 1:
-            vainqueur = self.choix[ median.index(max_median) ]
+            vainqueur = self.choix[ medians.index(max_median) ]
             return vainqueur
         else:
-            raise ValueError("Egalité")
+            return ValueError("Egalité")
         
     def graphe_majo(self, results, start):
+        """
+        
+
+        Parameters
+        ----------
+        results : TYPE
+            DESCRIPTION.
+        start : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        fig : TYPE
+            DESCRIPTION.
+        ax : TYPE
+            DESCRIPTION.
+
+        """
         data = np.array(
             [[element.count(i) for i in range(start, len(self.appreciations) + 1)]
              for element in results])
@@ -105,6 +152,25 @@ class Data():
     
         return fig, ax
     
+def quantile(liste, p = 0.5):
+    """
+    
+
+    Parameters
+    ----------
+    liste : list
+        tableau.
+    p : float, optional
+        Taux de partitions. Vaut par défaut 0.5.
+
+    Returns
+    -------
+    int
+        quantile de la liste de taux p. 
+
+    """
+    assert 0 < p < 1
+    return sorted(liste)[int(len(liste) * p)]
 
 
 
