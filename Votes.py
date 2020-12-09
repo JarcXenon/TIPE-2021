@@ -91,12 +91,12 @@ def test_election(votes, n_partis=0, n_population=0):
                               (0.25, 0.75, 'nord ouest'), 
                               (0.5, 0.5, 'centre'), (0.75, 0.25, 'sud est'), 
                               (0.75, 0.75, 'nord est')])
-    if n_population == 0:
+    if n_population == 1:
         population = crée_population([(0.5, 0.25, 0.2, 0.15, 25000, "sud"), 
                                       (0.5, 0.75, 0.2, 0.15, 25000, "nord"), 
                                       (0.25, 0.5, 0.2, 0.15, 25000, "ouest"), 
                                       (0.75, 0.5, 0.2, 0.15, 25000, "est")])
-    if n_population == 1:
+    if n_population == 0:
         population = crée_population([(0.25, 0.25, 0.2, 0.15, 25000, "sud ouest"), 
                                       (0.25, 0.75, 0.2, 0.15, 25000, "nord ouest"), 
                                       (0.75, 0.25, 0.2, 0.15, 25000, "sud est"), 
@@ -106,6 +106,9 @@ def test_election(votes, n_partis=0, n_population=0):
     for vote in votes:
         resultats.append(vote(partis, population))
     return resultats
+
+def test_elections(n_partis=0, n_population=0):
+    return test_election([main_alternatif, main_approbation, main_condorcet, main_uninominal], n_partis, n_population)
 
 """
 Condorcet
