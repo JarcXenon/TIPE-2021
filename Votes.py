@@ -10,12 +10,23 @@ Création de population
 
 def crée_population(populations):
     """
-    Crée une population
-    populations contient la liste des populations (a moyen, b moyen, p moyen, sigma, total, nom)
+
+    Parameters
+    ----------
+    populations : list tuple (float, float, float, float, float, string)
+        Liste des différentes populations-type.
+        Le tuple contient les arguments pour créer un groupe de la
+        population-type
+        (a moyen, b moyen, p moyen, écart-type, total, nom)
+    Returns
+    -------
+    population : list Individu
+        Liste de toute la population-type.
+
     """
     population = []
-    for pop in populations:
-        mua, mub, mup, sigma, k, nom = pop
+    for arguments in populations:
+        mua, mub, mup, sigma, k, nom = arguments
         for i in range(k):
             a = rd.gauss(mu=mua, sigma=sigma)
             b = rd.gauss(mu=mub, sigma=sigma)
@@ -24,14 +35,24 @@ def crée_population(populations):
             population.append(individu)
     return population
 
-def crée_partis(listeab):
+def crée_partis(liste_partis):
     """
-    Crée la liste des partis
-    listeab contient la liste des partis (a, b, nom)
+
+    Parameters
+    ----------
+    listeab : list tuple (float, float, string)
+        Le tuple contient les arguments pour créer un parti.
+        (a, b, nom)
+
+    Returns
+    -------
+    partis : list Individu
+        Liste des partis
+
     """
     partis = []
-    for k in listeab:
-        a, b, nom = k
+    for arguments in liste_partis:
+        a, b, nom = arguments
         parti = Individu(a, b, nom = nom)
         partis.append(parti)
     return partis
@@ -40,32 +61,29 @@ def crée_partis(listeab):
 Visualisation
 """
 
-"""
-Version précédente, on ne s'en sert plus
-
-def plot(population, partis):
-    list_a = []
-    list_b = []
-    list_a2 = []
-    list_b2 = []
-    for individu in population:
-        list_a.append(individu.a)
-        list_b.append(individu.b)
-    for parti in partis:
-        list_a2.append(parti.a)
-        list_b2.append(parti.b)
-    plt.clf()
-    plt.scatter(list_a, list_b, alpha = 0.1)
-    plt.scatter(list_a2, list_b2)
-    plt.show()
-    return None
-"""
-
 def heatmap(population, partis):
+    """
+    
+    Parameters
+    ----------
+    population : list Individu
+        Liste de toute la population-type.
+    partis : list Individu
+        Liste de tout les partis.
+
+    Returns
+    -------
+    None.
+    Crée une heatmap de la population ainsi que des points correspondant
+    aux partis.
+
+    """
+    
     list_a = []
     list_b = []
     list_a2 = []
     list_b2 = []
+    #On crée les listes de points qui correspondent aux partis et population
     for individu in population:
         list_a.append(individu.a)
         list_b.append(individu.b)
@@ -85,7 +103,25 @@ Résultats
 """
 
 def test_election(votes, n_partis=0, n_population=0):
-    "Teste un éléction avec le vote donné en argument"
+    """
+
+    Parameters
+    ----------
+    votes : list funcction
+        liste des votes que l'on veut tester.
+    n_partis : int, optional
+        numéro de la répartition de partis que l'on veut tester.
+        Vaut 0 par défaut.
+    n_population : int, optional
+        numéro de la population-type que l'on veut tester.
+        Vaut 0 par défaut.
+
+    Returns
+    -------
+    resultats : list Individu
+        Renvoie le tableau des candidats élus par chaque vote.
+
+    """
     if n_partis == 0:
         partis = crée_partis([(0.25, 0.25, 'sud ouest'), 
                               (0.25, 0.75, 'nord ouest'), 
@@ -108,14 +144,44 @@ def test_election(votes, n_partis=0, n_population=0):
     return resultats
 
 def test_elections(n_partis=0, n_population=0):
-    return test_election([main_alternatif, main_approbation, main_condorcet, main_uninominal], n_partis, n_population)
+    """
+
+    Parameters
+    ----------
+    n_partis : int, optional
+        numéro de la répartition de partis que l'on veut tester.
+        Vaut 0 par défaut.
+    n_population : int, optional
+        numéro de la population-type que l'on veut tester.
+        Vaut 0 par défaut.
+
+    Returns
+    -------
+    resultats : list Individu
+        Renvoie le tableau des candidats élus par chaque vote.
+
+    """
+    return test_election([main_alternatif, main_approbation, main_condorcet,
+                          main_uninominal], n_partis, n_population)
 
 """
 Condorcet
 """
 
 def scrutin_condorcet(partis):
-    "crée le scrutins (les duels)"
+    """
+    
+    Parameters
+    ----------
+    partis : list Individu
+        Tableau des partis candidats.
+
+    Returns
+    -------
+    scrutin : list tuple (Individu, Individu)
+        Tableau des duels du scrutin de condorcet
+
+    """
     scrutin = []
     n = len(partis)
     for i in range(n):
@@ -125,7 +191,22 @@ def scrutin_condorcet(partis):
     return scrutin
 
 def cree_bulletin_condorcet(individu, scrutin):
-    "fait voter un individu (crée son bulletin de vote)"
+    """
+
+    Parameters
+    ----------
+    individu : Individu
+        L'individu que l'on fait voter.
+    scrutin : list tuple (Individu, Individu)
+        Tableau des duels du scrutin de condorcet.
+
+    Returns
+    -------
+    bulletin : list Individu
+        Renvoie un tableau qui contient, pour chaque duel du scrutin,
+        le candidat préféré du duel.
+
+    """
     bulletin= []
     for duel in scrutin:
         #Pour chaque duel
@@ -135,7 +216,27 @@ def cree_bulletin_condorcet(individu, scrutin):
     return bulletin
 
 def duel_condorcet(bulletins, scrutin, partis):
-    "Réalise le vote"
+    """
+
+    Parameters
+    ----------
+    bulletins : list list Individu
+        Tableau des bulletins de la population
+        (Sous la forme du tableau qui contient le gagnant de chaque duel)
+    scrutin : scrutin : list tuple (Individu, Individu)
+        Tableau des duels du scrutin de condorcet.
+    partis : list Individu
+        Tableau des partis candidats.
+
+    Returns
+    -------
+    vainqueur : Individu
+        Parti vainqueur
+        Ici, celui qui a gagné le plus de duels
+    score : list int
+        Tableau du nombre de duels gagnés pour chaque parti
+
+    """
     score = [0 for k in partis]
     for bulletin in bulletins:
         for vainqueur in bulletin:
@@ -149,7 +250,22 @@ def duel_condorcet(bulletins, scrutin, partis):
     return vainqueur, score
 
 def main_condorcet(partis, population):
-    "Réalise un vote de Condorcet, renvoie juste le vainnqueur"
+    """
+
+    Parameters
+    ----------
+    partis : list Individu
+        Tableau des partis candidats.
+    population : list Individu
+        Tableau des individus que l'on fait voter.
+
+    Returns
+    -------
+    vainqueur : Individu
+        Parti vainqueur
+        Ici, celui qui a gagné le plus de duels.
+    Réalise un graphe du nombre de duels gagnés par chaque condidat
+    """
     scrutin = scrutin_condorcet(partis)
     bulletins = [cree_bulletin_condorcet(individu, scrutin) for individu in population]
     vainqueur, score = duel_condorcet(bulletins, scrutin, partis)
@@ -178,7 +294,10 @@ def vote_uninominal(bulletins, partis):
     return (vainqueur, score)
 
 def main_uninominal(partis, population):
-    "Réalise le vote uninominal et renvoit le vainqueur"
+    """
+    Réalise le vote uninominal, crée un graphe des votes
+    et renvoit le vainqueur
+    """
     bulletins = [cree_bulletins_uninominal(individu, partis) for individu in population]
     vainqueur, score = vote_uninominal(bulletins, partis)
     nom_partis = [parti.nom for parti in partis]
@@ -191,8 +310,10 @@ def main_uninominal(partis, population):
 Alternatif
 """
 def cree_bulletins_alternatif(individu, partis):
-    """Fait voter un individu (crée un bulletin de vote alternatif),
-    sous forme de la liste des candidats, dans l'ordre de préférence"""
+    """
+    Fait voter un individu (crée un bulletin de vote alternatif),
+    sous forme de la liste des candidats, dans l'ordre de préférence
+    """
     liste_choix = deepcopy(partis)
     bulletin = []
     while len(liste_choix) > 0:
@@ -202,7 +323,10 @@ def cree_bulletins_alternatif(individu, partis):
     return bulletin
 
 def min_alternatif(résultats, sortis):
-    "Renvoie l'indice du plus petit élément de résultat qui n'est pas dans sortis"
+    """
+    Renvoie l'indice du plus petit élément de résultat qui n'est pas
+    dans sortis
+    """
     i = 0
     n = len(résultats)
     while i < n and i in sortis:
@@ -227,6 +351,7 @@ def privation(l1, l2):
     return l
 
 def vote_alternatif(bulletins, partis):
+    "Dépouile les bulletins"
     l = len(bulletins)
     votes = [[] for k in partis]
     tout = []
@@ -256,11 +381,13 @@ def vote_alternatif(bulletins, partis):
             votes[partis.index(premier_choix)].append(vote)
         tout.append(deepcopy(résultats))
         v_premier = max(résultats)
-        print(résultats)
-    return résultats.index(max(résultats)), tout
+    return partis[résultats.index(max(résultats))], tout
 
 def main_alternatif(partis, population):
-    "Réalise le vote alternatif et renvoit le vainqueur"
+    """
+    Réalise le vote alternatif, crée un graphe des votes, avec une couleur
+    différente pour chaque vote consécutif, et renvoit le vainqueur
+    """
     bulletins = [cree_bulletins_alternatif(individu, partis) for individu in population]
     vainqueur, résultats = vote_alternatif(bulletins, partis)
     nom_partis = [parti.nom for parti in partis] + ["ordre"]
@@ -277,11 +404,12 @@ Approbation
 """
 
 def cree_bulletin_approbation(individu, partis):
-    """Fait voter un individu (crée un bulletin de vote alternatif),
-    sous forme d'une liste de bolléens, dans l'ordre des partis"""
+    """
+    Fait voter un individu (crée un bulletin de vote alternatif),
+    sous forme d'une liste de bolléens, dans l'ordre des partis
+    """
     approuvés = disque(individu, partis)
     bulletin = [parti in approuvés for parti in partis]
-    print(individu.nom, bulletin)
     return bulletin
 
 def vote_approbation(bulletins, partis):
@@ -297,7 +425,10 @@ def vote_approbation(bulletins, partis):
 
 
 def main_approbation(partis, population):
-    "Réalise le vote par approbation et renvoit le vainqueur"
+    """
+    Réalise le vote par approbationl, crée un graphe des votes
+    et renvoit le vainqueur
+    """
     bulletins = [cree_bulletin_approbation(individu, partis) for individu in population]
     vainqueur, résultats = vote_approbation(bulletins, partis)
     nom_partis = [parti.nom for parti in partis]
