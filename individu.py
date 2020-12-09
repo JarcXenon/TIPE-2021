@@ -9,11 +9,31 @@ from random import choice
 
 class Individu():
     """
-    a, b : position de l'individu/parti sur l'échéquier politique
-    p : distance à laquelle un parti doit être pour que l'individu l'approuve
-    nom : nom du parti ou du groupe
+    Objet désignant un individu ou un parti
     """
-    def __init__(self, a, b, p = None, nom = '', epsilon = 10 ** -9):
+
+    def __init__(self, a, b, p = 0, nom = '', epsilon = 10 ** -9):
+        """
+        
+
+        Parameters
+        ----------
+        a : float
+            abscisse de l'individu/parti sur l'échéquier politique.
+        b : float
+            ordonnée de l'individu/parti sur l'échéquier politique.
+        p : float, optional
+            distance à laquelle un parti doit être pour que l'individu l'approuve. Vaut par défaut 0
+        nom : string, optional
+            nom du parti ou du groupe. Vaut par défaut ''
+        epsilon : float, optional
+            écart pour les comparaison. Vaut par défaut 10 ** -9.
+
+        Returns
+        -------
+        None.
+
+        """
         self.a = a
         self.b = b
         self.p = p
@@ -33,30 +53,76 @@ class Individu():
     
     def __eq__(self, other):
         # ==
-        return self.distance_caree_autre(other) <= self.epsilon
+        return self.distance_caree(other) <= self.epsilon
     
-    def distance_carre(self):
-        return self.a ** 2 + self.b ** 2
-    
-    def distance_caree_autre(self, other):
-        return (self.a - other.a)**2 + (self.b - other.b)**2
+    def distance_caree(self, other = None):
+        return self.a ** 2 + self.b ** 2 if not other else (self.a - other.a)**2 + (self.b - other.b)**2 
 
 
-def minis(ind, liste):
-    m = liste[0]
-    l_mini = [m]
-    for element in liste:
-        if ind.distance_caree_autre(element) < ind.distance_caree_autre(m):
-            m = element
-            l_mini = [m]
-        elif element == m:
+def minis(ind, liste_partis):
+    """
+    
+
+    Parameters
+    ----------
+    ind : Individu
+        désigne un individu
+    liste_partis : Individu list
+        liste des partis.
+
+    Returns
+    -------
+    l_mini : Invidu list
+        liste des partis les plus proches de l'individu ind
+
+    """
+    
+    plus_proche_parti = liste_partis[0]
+    l_mini = [plus_proche_parti]
+    
+    for element in liste_partis:
+        if ind.distance_caree(element) < ind.distance_caree(plus_proche_parti):
+            plus_proche_parti = element
+            l_mini = [plus_proche_parti]
+        elif element == plus_proche_parti:
             l_mini.append(element)
     return l_mini
 
-def mini(ind, liste):
-    l = minis(ind, liste)
+def mini(ind, liste_partis):
+    """
+    
+
+    Parameters
+    ----------
+    ind : Individu
+        désigne un individu
+    liste_partis : Individu list
+        liste des partis.
+
+    Returns
+    -------
+    Individu
+        Un des partis les plus proches de l'individu ind.
+
+    """
+    l = minis(ind, liste_partis)
     return choice(l)
 
-def disque(ind, liste):
+def disque(ind, liste_partis):
+    """
+    
+
+    Parameters
+    ----------
+    ind : Individu
+        désigne un individu
+    liste_partis : Individu list
+        liste des partis.
+
+    Returns
+    -------
+    liste de tous les partis que l'individu approuve
+
+    """
     p_c = ind.p ** 2
-    return [element for element in liste if ind.distance_caree_autre(element) <= p_c]
+    return [parti for parti in liste_partis if ind.distance_caree(parti) <= p_c]
