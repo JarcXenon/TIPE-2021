@@ -280,23 +280,66 @@ Uninominal
 """
 
 def cree_bulletins_uninominal(individu, partis):
-    "Fait voter un individu (crée un bulletin de vote uninominal)"
+    """
+
+    Parameters
+    ----------
+    individu : Individu
+        L'individu que l'on fait voter.
+    partis : list Individu
+        Tableau des partis candidats.
+        
+    Returns
+    -------
+    Individu
+        Renvoie le candidat préféré de l'individu parmis les candidats.
+
+    """
     return mini(individu, partis)
 
 def vote_uninominal(bulletins, partis):
-    "Dépouille les bulletins"
+    """
+
+    Parameters
+    ----------
+    bulletins : list list Individu
+        Tableau des bulletins de la population
+    partis : list Individu
+        Tableau des partis candidats.
+
+    Returns
+    -------
+    vainqueur : Individu
+        Parti vainqueur
+    score : list int
+        Tableau du nombre de votes pour chaque parti
+
+    """
     score = [0 for k in partis]
     for vote in bulletins:
         score[partis.index(vote)] += 1
-    "Trouve le vainqueur"
     score_vainqueur = max(score)
     vainqueur = partis[score.index(score_vainqueur)]
     return (vainqueur, score)
 
 def main_uninominal(partis, population):
     """
-    Réalise le vote uninominal, crée un graphe des votes
-    et renvoit le vainqueur
+    
+
+    Parameters
+    ----------
+    partis : list Individu
+        Tableau des partis candidats.
+    population : list Individu
+        Tableau des individus que l'on fait voter.
+
+    Returns
+    -------
+    vainqueur : Individu
+        Parti vainqueur
+        Ici, le premier choix du plus d'élécteurs
+    Réalise un graphe du nombre de votes reçus par chaque condidat
+
     """
     bulletins = [cree_bulletins_uninominal(individu, partis) for individu in population]
     vainqueur, score = vote_uninominal(bulletins, partis)
@@ -309,10 +352,22 @@ def main_uninominal(partis, population):
 """
 Alternatif
 """
+
 def cree_bulletins_alternatif(individu, partis):
     """
-    Fait voter un individu (crée un bulletin de vote alternatif),
-    sous forme de la liste des candidats, dans l'ordre de préférence
+
+    Parameters
+    ----------
+    individu : Individu
+        L'individu que l'on fait voter.
+    partis : list Individu
+        Tableau des partis candidats.
+
+    Returns
+    -------
+    bulletin : list Individu
+        Renvoie un tableau qui contient les candidats
+        dans l'ordre de préférence de l'individu.
     """
     liste_choix = deepcopy(partis)
     bulletin = []
@@ -322,26 +377,22 @@ def cree_bulletins_alternatif(individu, partis):
         bulletin.append(choix)
     return bulletin
 
-def min_alternatif(résultats, sortis):
-    """
-    Renvoie l'indice du plus petit élément de résultat qui n'est pas
-    dans sortis
-    """
-    i = 0
-    n = len(résultats)
-    while i < n and i in sortis:
-        i += 1
-    imax = résultats[i]
-    k = i
-    while k < n:
-        if imax > résultats[k] and not k in sortis:
-            i = k
-            imax = résultats[k]
-        k += 1
-    return i
-
 def privation(l1, l2):
-    "Renvoie l1 privée de l2"
+    """
+
+    Parameters
+    ----------
+    l1 : list
+        contient une liste dont on veut retirer des éléments.
+    l2 : list
+        contient la liste des éléments que l'on veut retirer.
+
+    Returns
+    -------
+    l : list
+        l1 privée de l2.
+
+    """
     l = deepcopy(l1)
     for x in l2:
         try:
@@ -351,7 +402,25 @@ def privation(l1, l2):
     return l
 
 def vote_alternatif(bulletins, partis):
-    "Dépouile les bulletins"
+    """
+    
+
+    Parameters
+    ----------
+    bulletins : list list Individu
+        Tableau des bulletins de la population
+    partis : list Individu
+        Tableau des partis candidats.
+
+    Returns
+    -------
+    vainqueur : Individu
+        Parti vainqueur
+    tout : list list int
+        Tableau du nombre de vote pour chaque parti
+        à chaque éléction successive.
+
+    """
     l = len(bulletins)
     votes = [[] for k in partis]
     tout = []
@@ -381,12 +450,28 @@ def vote_alternatif(bulletins, partis):
             votes[partis.index(premier_choix)].append(vote)
         tout.append(deepcopy(résultats))
         v_premier = max(résultats)
-    return partis[résultats.index(max(résultats))], tout
+        vainqueur = partis[résultats.index(max(résultats))]
+    return vainqueur, tout
 
 def main_alternatif(partis, population):
     """
-    Réalise le vote alternatif, crée un graphe des votes, avec une couleur
-    différente pour chaque vote consécutif, et renvoit le vainqueur
+    
+
+    Parameters
+    ----------
+    partis : list Individu
+        Tableau des partis candidats.
+    population : list Individu
+        Tableau des individus que l'on fait voter.
+
+    Returns
+    -------
+    vainqueur : Individu
+        Parti vainqueur
+        Ici, le premier candidat à passer 50% des voix à une election
+    Réalise un graphe du nombre de votes reçus par chaque condidat
+    à chaque éléction
+
     """
     bulletins = [cree_bulletins_alternatif(individu, partis) for individu in population]
     vainqueur, résultats = vote_alternatif(bulletins, partis)
@@ -405,14 +490,43 @@ Approbation
 
 def cree_bulletin_approbation(individu, partis):
     """
-    Fait voter un individu (crée un bulletin de vote alternatif),
-    sous forme d'une liste de bolléens, dans l'ordre des partis
+    
+    Parameters
+    ----------
+    individu : Individu
+        L'individu que l'on fait voter.
+    partis : list Individu
+        Tableau des partis candidats.
+
+    Returns
+    -------
+    bulletin : list bool
+        Tableau de bolléens correspondant à si l'indivdu approuve
+        de chaque parti, dans l'ordre des partis.
+
     """
     approuvés = disque(individu, partis)
     bulletin = [parti in approuvés for parti in partis]
     return bulletin
 
 def vote_approbation(bulletins, partis):
+    """
+
+    Parameters
+    ----------
+    bulletins : list list Individu
+        Tableau des bulletins de la population
+    partis : list Individu
+        Tableau des partis candidats.
+
+    Returns
+    -------
+    vainqueur : Individu
+        Parti vainqueur
+    score : list int
+        Tableau du nombre d'individus qui approvent chaque parti
+
+    """
     score = [0 for k in partis]
     n = len(partis)
     for vote in bulletins:
@@ -421,13 +535,27 @@ def vote_approbation(bulletins, partis):
             if vote[i]:
                 score[i] += 1
             i += 1
-    return partis[score.index(max(score))], score
+        vainqueur = partis[score.index(max(score))]
+    return vainqueur, score
 
 
 def main_approbation(partis, population):
     """
-    Réalise le vote par approbationl, crée un graphe des votes
-    et renvoit le vainqueur
+
+    Parameters
+    ----------
+    partis : list Individu
+        Tableau des partis candidats.
+    population : list Individu
+        Tableau des individus que l'on fait voter.
+
+    Returns
+    -------
+    vainqueur : Individu
+        Parti vainqueur
+        Ici, le candidat approuvé par le plus d'individus
+    Réalise un graphe du nombre de votes reçus par chaque condidat
+
     """
     bulletins = [cree_bulletin_approbation(individu, partis) for individu in population]
     vainqueur, résultats = vote_approbation(bulletins, partis)
