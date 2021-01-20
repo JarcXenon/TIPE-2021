@@ -8,7 +8,6 @@ Created on Wed Nov 18 13:33:10 2020
 
 import numpy as np
 import matplotlib.pyplot as plt
-from cleanup import choix, appreciation
 
 default_appreciations = ["Pas vu", "Nul", "Mauvais", "Moyen", "Assez bien",
                          "Bien", "Excellent"]
@@ -217,11 +216,11 @@ def quantile(liste, p = 0.5):
 
 
 if __name__ == '__main__':
-    #d = Data(file = "vote film (majoritaire).csv")
-    d = Data(tableau = appreciation, choix = choix,
-             appreciations = appreciations_vote)
+    d = Data(file = "vote film (majoritaire).csv")
+    #d = Data(tableau = appreciation, choix = choix,
+     #        appreciations = appreciations_vote)
     vainqueur = d.jugement_majoritaire(
-        compte_pas_vu = True,
+        compte_pas_vu = False,
         afficher=True,
         taux_de_départage=0.9)
     
