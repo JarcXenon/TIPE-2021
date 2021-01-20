@@ -20,6 +20,7 @@ def doublon(tab):
 
 k = 0
 s = 0
+
 while k < len(condorcet):
     for i in range(8):
         condorcet[k][i] = int(condorcet[k][i])
@@ -29,3 +30,10 @@ while k < len(condorcet):
     else:
         k+=1
     s += 1
+    
+appreciations_vote = ["Nul", "Insuffisant", "Passable", "Assez bien", "Bien",
+                      "Excellent"]
+
+for k in appreciation:
+    for i in range(8):
+        k[i] = appreciations_vote.index(k[i]) + 1

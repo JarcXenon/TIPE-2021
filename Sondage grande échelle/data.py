@@ -8,14 +8,19 @@ Created on Wed Nov 18 13:33:10 2020
 
 import numpy as np
 import matplotlib.pyplot as plt
+from cleanup import choix, appreciation
 
-default_appreciations = ["Pas vu", "Nul", "Mauvais", "Moyen", "Assez bien", "Bien", "Excellent"]
-
+default_appreciations = ["Pas vu", "Nul", "Mauvais", "Moyen", "Assez bien",
+                         "Bien", "Excellent"]
+appreciations_vote = ["Nul", "Insuffisant", "Passable", "Assez bien", "Bien",
+                      "Excellent"]
 
 class Data(): 
     
-    def __init__(self, file,
-                 appreciations = default_appreciations):
+    def __init__(self, file = None,
+                 appreciations = default_appreciations,
+                 tableau = None,
+                 choix = None):
         """
         
 
@@ -33,24 +38,32 @@ class Data():
         None.
 
         """
-        self.file = file
+        
+        if file:
+            self.file = file
+        
+        
+            with open(file, "r") as f:
+                
+                self.choix = f.readline().strip('\n').split(',')[1:] #Tableau des choix possibles
+                lines = f.readlines()
+                
+                self.votes = [] #Tableau des tableaux représentant les votes de chaque personne
+                
+                for line in lines:
+                    nom, *vote = line.split(',')
+                    self.votes.append([int(n) for n in vote])
+        if tableau:
+            self.votes = tableau
+        
+        if choix:
+            self.choix = choix
+        
         self.appreciations = appreciations
         
-        with open(file, "r") as f:
-            
-            self.choix = f.readline().strip('\n').split(',')[1:] #Tableau des choix possibles
-            lines = f.readlines()
-            
-            self.noms = [] #Tableau des noms des participants
-            self.votes = [] #Tableau des tableaux représentant les votes de chaque personne
-            
-            for line in lines:
-                nom, *vote = line.split(',')
-                self.noms.append(nom)
-                self.votes.append([int(n) for n in vote])
         
     def __repr__(self):
-        return f'Data({self.file}, {self.choix})'
+        return f'Data({self.votes}, {self.choix})'
     
     def jugement_majoritaire(self, 
                              compte_pas_vu = True, 
@@ -204,9 +217,11 @@ def quantile(liste, p = 0.5):
 
 
 if __name__ == '__main__':
-    d = Data("vote film (majoritaire).csv")
+    #d = Data(file = "vote film (majoritaire).csv")
+    d = Data(tableau = appreciation, choix = choix,
+             appreciations = appreciations_vote)
     vainqueur = d.jugement_majoritaire(
-        compte_pas_vu = True,
+        compte_pas_vu = False,
         afficher=True,
         taux_de_départage=0.1)
     
