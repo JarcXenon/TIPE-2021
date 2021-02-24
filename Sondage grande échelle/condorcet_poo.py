@@ -6,7 +6,6 @@ Created on Wed Nov 25 15:01:23 2020
 """
 
 import matplotlib.pyplot as plt
-from cleanup import choix, condorcet
 
 class Data():
     
@@ -14,10 +13,21 @@ class Data():
         self.file = file
         if file:
             with open(file, "r") as f:
-                    
-                self.choix = f.readline().strip('\n').split(',')
-                lines = f.readlines()
                 
+                lines = []
+                line = f.readline().strip('\n')
+                lines += line.split(';')
+                line = f.readline().strip('\n')
+                while not line[0].isnumeric():
+                    line = line.split(';')
+                    lines[-1] += '\n' + line[0]
+                    line = line[1:]
+                    lines += line
+                    line = f.readline().strip('\n')
+                self.choix = lines[:-1]
+                
+                lines = [line]
+                lines += f.readlines()
                 self.votes = []
                 
                 for line in lines:
@@ -68,5 +78,5 @@ a = Data(file = "vote classement.csv")
 a.condorcet(afficher = True)
 """
 
-b = Data(tableau = condorcet, choix = choix)
+b = Data(file = 'condorcet.csv')
 b.condorcet(afficher = True)

@@ -8,7 +8,6 @@ Created on Wed Nov 18 13:33:10 2020
 
 import numpy as np
 import matplotlib.pyplot as plt
-from cleanup import choix, appreciation
 
 default_appreciations = ["Pas vu", "Nul", "Mauvais", "Moyen", "Assez bien",
                          "Bien", "Excellent"]
@@ -45,6 +44,27 @@ class Data():
         
             with open(file, "r") as f:
                 
+                lines = []
+                line = f.readline().strip('\n')
+                lines += line.split(';')
+                line = f.readline().strip('\n')
+                while not line[0].isnumeric():
+                    line = line.split(';')
+                    lines[-1] += '\n' + line[0]
+                    line = line[1:]
+                    lines += line
+                    line = f.readline().strip('\n')
+                self.choix = lines[:-1]
+                
+                lines = [line]
+                lines += f.readlines()
+                self.votes = []
+                
+                for line in lines:
+                    vote = line.split(',')
+                    self.votes.append([int(n) for n in vote])
+                
+                """
                 self.choix = f.readline().strip('\n').split(',')[1:] #Tableau des choix possibles
                 lines = f.readlines()
                 
@@ -53,6 +73,7 @@ class Data():
                 for line in lines:
                     nom, *vote = line.split(',')
                     self.votes.append([int(n) for n in vote])
+                """
         if tableau:
             self.votes = tableau
         
@@ -218,7 +239,7 @@ def quantile(liste, p = 0.5):
 
 if __name__ == '__main__':
     #d = Data(file = "vote film (majoritaire).csv")
-    d = Data(tableau = appreciation, choix = choix,
+    d = Data(file = 'appreciation.csv',
              appreciations = appreciations_vote)
     vainqueur = d.jugement_majoritaire(
         compte_pas_vu = True,
